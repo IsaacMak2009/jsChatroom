@@ -15,12 +15,5 @@
   "bugs": {
     "url": "https://github.com/IsaacMak2009/jsChatroom/issues"
   },
-  "homepage": "https://github.com/IsaacMak2009/jsChatroom#readme",
-  "keywords": [
-    "javascript"
-  ],
-  "dependencies": {
-    "express": "^4.18.1",
-    "socket.io": "^4.5.1"
-  }
+  "homepage": "https://github.com/IsaacMak2009/jsChatroom#readme"
 }
