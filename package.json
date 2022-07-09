@@ -1,0 +1,19 @@
+{
+  "name": "js-chatroom",
+  "version": "1.0.0",
+  "description": "a simple chatroom make with socketio and express.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IsaacMak2009/jsChatroom.git"
+  },
+  "author": "IsaacMak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IsaacMak2009/jsChatroom/issues"
+  },
+  "homepage": "https://github.com/IsaacMak2009/jsChatroom#readme"
+}
