@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/IsaacMak2009/jsChatroom/issues"
   },
-  "homepage": "https://github.com/IsaacMak2009/jsChatroom#readme"
+  "homepage": "https://github.com/IsaacMak2009/jsChatroom#readme",
+  "dependencies": {
+    "config": "^3.3.7"
+  }
 }

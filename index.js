@@ -1,7 +1,11 @@
 // import libraries
 const express = require('express');
 const path = require('path');
+const config = require('config');
+
 var app = express();
+var host = config.get('server.host');
+var port = config.get('server.port');
 
 // use ejs as view engine
 app.set('view engine', 'ejs');
@@ -14,5 +18,5 @@ app.get('/', function(req, res) {
     res.send("Hello World!");
 });
 
-app.listen(5000);
-console.log("listening on http://localhost:5000");
+app.listen(port);
+console.log("listening on http://"+host+":"+port);
