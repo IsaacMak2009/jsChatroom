@@ -5,7 +5,5 @@
     },
     "app": {
         "max-online": 100,
-        "verify": true,
-        "verify-code": 8888
     }
 }
