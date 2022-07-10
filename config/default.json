@@ -4,6 +4,6 @@
         "port": 5000
     },
     "app": {
-        "max-online": 100,
+        "max-online": 100
     }
 }

@@ -26,13 +26,9 @@ app.set('view engine', 'html');
 app.use(express.static('public'));
 
 app.get('/', function(req, res) {
-    if (req.query.err) {
-        res.render('html/login.html', {
-            isverify: verify,
-            code: verifycode,
+    res.render('html/login.html', {
             errmsg: (req.query.err==undefined)?"":req.query.err
-    })};
-});
+})});
 
 app.post('/auth', function(req, res) {
     var name =req.body.username;
@@ -47,7 +43,7 @@ app.post('/auth', function(req, res) {
 });
 
 app.get('/chatroom', function(req, res){
-    res.render("html/room.html")
+    res.render("html/room.html");
 });
 
 app.listen(port);
