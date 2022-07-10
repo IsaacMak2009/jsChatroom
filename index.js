@@ -17,6 +17,17 @@ var port = config.get('server.port');
 // list to store user names
 var userNames = [];
 
+// function to get cookie
+function getcookie(req) {
+    var cookie = req.headers.cookie;
+    cookie = cookie.split('; ');
+    var result = new Object();
+    for (var i = 0; i < cookie.length; i++) {
+        result[cookie[i].split('=')[0]] = cookie[i].split('=')[1];
+    }
+    return result;
+}
+
 // use ejs as view engine
 app.set("views", __dirname+'/public/');
 app.engine('html', require('ejs').renderFile);
@@ -26,12 +37,13 @@ app.set('view engine', 'html');
 app.use(express.static('public'));
 
 app.get('/', function(req, res) {
+    res.clearCookie('username');
     res.render('html/login.html', {
             errmsg: (req.query.err==undefined)?"":req.query.err
 })});
 
 app.post('/auth', function(req, res) {
-    var name =req.body.username;
+    var name=req.body.username;
     if (!(userNames.includes(name))) {
         userNames.push(name);
         res.cookie('username',name);
@@ -43,6 +55,12 @@ app.post('/auth', function(req, res) {
 });
 
 app.get('/chatroom', function(req, res){
+    // check cookie
+    // console.log(getcookie(req))
+    if (getcookie(req).username == undefined) {
+        res.redirect('/?err=Unknown%20error');
+        return;
+    }
     res.render("html/room.html");
 });
 
