@@ -3,7 +3,7 @@
         "host": "localhost",
         "port": 5000
     },
-    "chatroom": {
+    "app": {
         "max-online": 100,
         "verify": true,
         "verify-code": 8888

@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/IsaacMak2009/jsChatroom#readme",
   "dependencies": {
-    "config": "^3.3.7"
+    "config": "^3.3.7",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "socket.io": "^4.5.1"
   }
 }

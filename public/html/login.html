@@ -6,17 +6,19 @@
     </head>
     <body>
         <div class="signin">
-            <form action="#" method="post" autocomplete="off">
+            <form action="/api/v1/auth/login" method="post" autocomplete="off">
               <div class="group head">
                 <h2>Welcome Back</h2>
               </div>
               <div class="group">
                 <input type="text" name="username" id="username-field" placeholder="Username" required>
               </div>
+              <% if (isverify) { %>
               <div class="group">
                 <input type="password" name="password" id="password-field" placeholder="verify code" required>
                 <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
               </div>
+              <% } %>
               <div class="group forgot-pass-link">
               </div>
               <div class="group">
