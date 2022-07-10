@@ -1,0 +1,11 @@
+{
+    "server": {
+        "host": "localhost",
+        "port": 5000,
+    },
+    "chatroom": {
+        "max-online": 100,
+        "verify": true,
+        "verify-code": 8888
+    }
+}
