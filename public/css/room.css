@@ -60,6 +60,6 @@ html, body { height: 100%; margin: 0; }
     width: auto;
     height: 90%;
     overflow-x: hidden;
-    overflow-y: 550px;
+    overflow-y: 90%;
     text-align:justify;
 }

@@ -4,7 +4,7 @@ const config = require('config');
 const bodyParser = require('body-parser');
 var app = express();
 var http = require('http').createServer(app);
-var io = require('socket.io').listen(http);
+var io = require('socket.io')(http);
 
 // configure the app to use bodyParser()
 app.use(bodyParser.urlencoded({
@@ -22,12 +22,16 @@ var userNames = [];
 // function to get cookie
 function getcookie(req) {
     var cookie = req.headers.cookie;
-    cookie = cookie.split('; ');
-    var result = new Object();
-    for (var i = 0; i < cookie.length; i++) {
-        result[cookie[i].split('=')[0]] = cookie[i].split('=')[1];
+    if (cookie) {
+        cookie = cookie.split('; ');
+        var result = new Object();
+        for (var i = 0; i < cookie.length; i++) {
+            result[cookie[i].split('=')[0]] = cookie[i].split('=')[1];
+        }
+        return result;
     }
-    return result;
+    return null;
+    
 }
 
 // use ejs as view engine
@@ -40,9 +44,11 @@ app.use(express.static('public'));
 
 // some routes
 app.get('/', function(req, res) {
-    if (getcookie(req).username!=undefined) {
-        res.redirect('/chatroom');
-        return;
+    if (getcookie(req)){
+        if (getcookie(req).username == undefined) {
+            res.redirect('/chatroom');
+            return;
+        }
     }
     res.render('html/login.html', {
             errmsg: (req.query.err==undefined)?"":req.query.err
@@ -63,9 +69,11 @@ app.post('/auth', function(req, res) {
 app.get('/chatroom', function(req, res){
     // check cookie
     // console.log(getcookie(req))
-    if (getcookie(req).username == undefined) {
-        res.redirect('/?err=Unknown%20error');
-        return;
+    if (getcookie(req)){
+        if (getcookie(req).username == undefined) {
+            res.redirect('/?err=Unknown%20error');
+            return;
+        }
     }
     res.render("html/room.html");
 });
