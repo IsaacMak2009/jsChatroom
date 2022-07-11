@@ -55,11 +55,15 @@ html, body { height: 100%; margin: 0; }
 }
 
 #chatroom {
-    padding: 30px 0 0 5px;
+    padding: 0 0 0 5px;
     background-color: rgb(255, 255, 255);
     width: auto;
     height: 90%;
     overflow-x: hidden;
-    overflow-y: 90%;
+    overflow-y: 550px;
     text-align:justify;
+}
+
+#verified {
+    color: skyblue;
 }

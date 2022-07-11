@@ -15,10 +15,13 @@ app.use(bodyParser.json());
 // load configuration
 let host = config.get('server.host');
 let port = config.get('server.port');
+let maxMsgStroage = config.get('app.maxMsgStroage');
+let loadPreviousData = config.get('app.loadPreviousData');
 
-// list to store user names
-var userNames = [];
-var allClient = [];
+// variables to store data
+var userNames = ["Bot"];
+var chats = [];
+var stored = 0
 
 // function to get cookie
 function getcookie(req) {
@@ -32,6 +35,29 @@ function getcookie(req) {
         return result;
     }
     return null;
+}
+
+function sendMsg(msg,io) {
+    msg.verified = false
+    if (stored==maxMsgStroage) {
+        chats.shift();
+        stored -= 1;
+    }
+    chats.push(msg)
+    stored += 1;
+    io.emit("chatmsg", msg.username, msg.msg);
+    console.log(JSON.stringify(msg))
+}
+
+function sendBotMsg(msg,io) {
+    if (stored==maxMsgStroage) {
+        chats.shift();
+        stored -= 1;
+    }
+    chats.push({"username": "Bot", "msg": msg, "verified": true});
+    stored += 1
+    io.emit("botmsg", "Bot", msg);
+    console.log(JSON.stringify({"username": "Bot", "msg": msg, "verified": true}))
 }
 
 // remove object form array
@@ -64,9 +90,13 @@ app.get('/', function(req, res) {
 app.post('/auth', function(req, res) {
     var name=req.body.username;
     if (!(userNames.includes(name))) {
-        res.cookie('username',name);
-        res.redirect('/chatroom');
-        return;
+        if (/^[A-Za-z0-9]*$/.test(name)){
+            res.cookie('username',name);
+            res.redirect('/chatroom');
+            return;
+        } else {
+            res.redirect('/?err=username%20is%20not%20exceptable');
+        }
     } else {
         res.redirect('/?err=username%20already%20used');
     }
@@ -87,19 +117,26 @@ app.get('/chatroom', function(req, res){
     res.redirect('/?err=Unknown%20error');
 });
 
+app.get('/api/chats/data', function(req, res) {
+    if (loadPreviousData==true) {
+        res.send(chats);
+        return;
+    }
+    res.send(null);
+});
+
 io.on("connection", function(socket) {
     socket.on("join", function(username){
         socket.username = username;
         userNames.push(username);
-        console.log(username+" joined server");
+        sendBotMsg(username+" joined server", io)
     });
     socket.on("disconnect", function(){
         userNames.remove(socket.username);
-        console.log(socket.username+" disconnected");
+        sendBotMsg(socket.username+" disconnected", io)
     });
     socket.on("msg", function(msg){
-        io.emit("chatmsg", msg.username, msg.msg);
-        console.log("{'username':"+msg.username+", 'msg':"+msg.msg+"}");
+        sendMsg(msg,io);
     });
 });
 
