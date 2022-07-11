@@ -3,6 +3,8 @@ const express = require('express');
 const config = require('config');
 const bodyParser = require('body-parser');
 var app = express();
+var http = require('http').createServer(app);
+var io = require('socket.io').listen(http);
 
 // configure the app to use bodyParser()
 app.use(bodyParser.urlencoded({
@@ -36,8 +38,12 @@ app.set('view engine', 'html');
 // set static path
 app.use(express.static('public'));
 
+// some routes
 app.get('/', function(req, res) {
-    res.clearCookie('username');
+    if (getcookie(req).username!=undefined) {
+        res.redirect('/chatroom');
+        return;
+    }
     res.render('html/login.html', {
             errmsg: (req.query.err==undefined)?"":req.query.err
 })});
@@ -64,5 +70,15 @@ app.get('/chatroom', function(req, res){
     res.render("html/room.html");
 });
 
-app.listen(port);
-console.log("listening on http://"+host+":"+port);
+io.on("connection", function(socket) {
+    console.log("user connected");
+    socket.on("disconnect", function(){
+        console.log("user disconnected");
+    })
+});
+
+// start http server
+http.listen(port, ()=>{
+    console.log("listening on http://"+host+":"+port);
+})
+
