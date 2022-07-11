@@ -50,7 +50,6 @@ $.get('/../api/chats/data', function(result){
 })
 
 // main
-
 var usname = getcookie().username;
 var socket = io();
 socket.emit('join', usname)
