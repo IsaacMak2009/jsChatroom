@@ -13,11 +13,12 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // load configuration
-var host = config.get('server.host');
-var port = config.get('server.port');
+let host = config.get('server.host');
+let port = config.get('server.port');
 
 // list to store user names
 var userNames = [];
+var allClient = [];
 
 // function to get cookie
 function getcookie(req) {
@@ -31,8 +32,19 @@ function getcookie(req) {
         return result;
     }
     return null;
-    
 }
+
+// remove object form array
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+};
 
 // use ejs as view engine
 app.set("views", __dirname+'/public/');
@@ -44,12 +56,7 @@ app.use(express.static('public'));
 
 // some routes
 app.get('/', function(req, res) {
-    if (getcookie(req)){
-        if (getcookie(req).username == undefined) {
-            res.redirect('/chatroom');
-            return;
-        }
-    }
+    res.clearCookie("username");
     res.render('html/login.html', {
             errmsg: (req.query.err==undefined)?"":req.query.err
 })});
@@ -57,7 +64,6 @@ app.get('/', function(req, res) {
 app.post('/auth', function(req, res) {
     var name=req.body.username;
     if (!(userNames.includes(name))) {
-        userNames.push(name);
         res.cookie('username',name);
         res.redirect('/chatroom');
         return;
@@ -69,20 +75,32 @@ app.post('/auth', function(req, res) {
 app.get('/chatroom', function(req, res){
     // check cookie
     // console.log(getcookie(req))
-    if (getcookie(req)){
-        if (getcookie(req).username == undefined) {
+    var cookie = getcookie(req)
+    if (cookie){
+        if (cookie.username == undefined) {
             res.redirect('/?err=Unknown%20error');
             return;
         }
+        res.render("html/room.html");
+        return;
     }
-    res.render("html/room.html");
+    res.redirect('/?err=Unknown%20error');
 });
 
 io.on("connection", function(socket) {
-    console.log("user connected");
+    socket.on("join", function(username){
+        socket.username = username;
+        userNames.push(username);
+        console.log(username+" joined server");
+    });
     socket.on("disconnect", function(){
-        console.log("user disconnected");
-    })
+        userNames.remove(socket.username);
+        console.log(socket.username+" disconnected");
+    });
+    socket.on("msg", function(msg){
+        io.emit("chatmsg", msg.username, msg.msg);
+        console.log("{'username':"+msg.username+", 'msg':"+msg.msg+"}");
+    });
 });
 
 // start http server
